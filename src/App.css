@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+.form-input input{
+  padding: 0.8rem 0.7rem;
+  border-radius: 10px;
+  margin: 5px;
+}
+.form-input button{
+  padding: 0.6rem 1.5rem;
+  border-radius: 10px;
+}
+.action-btn{
+  padding: 0.6rem 1.5rem;
+  border-radius: 10px; 
+}

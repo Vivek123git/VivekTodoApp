@@ -8,8 +8,14 @@ const TodoApp = () => {
     age: "",
     image:""
   });
+  const [loader , setLoader] = useState({
+    loader1:false,
+    loader2:false,
+    loader3:false,
+    loader4:false
+  })
 
-console.log(state.image)
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "image") {
@@ -65,14 +71,25 @@ console.log(state.image)
 
 
   const handleClick = () => {
+    setLoader({
+      ...loader,
+      loader1:true
+    })
    axios.post("http://localhost:2000/todo/create",formData)
    .then((res)=>{
    console.log(res.message)
    getTable()
- 
+   setLoader({
+    ...loader,
+    loader1:false
+  })
    })
    .catch((err)=>{
     console.log(err.message)
+    setLoader({
+      ...loader,
+      loader1:false
+    })
    })
   };
 
@@ -102,15 +119,27 @@ console.log(state.image)
   };
 
   const handleUpdate=()=>{
+    setLoader({
+      ...loader,
+      loader2:true
+    })
     const id = {...state}
     axios.post("http://localhost:2000/todo/edit_table",id)
     .then((res)=>{
       console.log(res.data.data)
       getTable();
       setSubmit(true)
+       setLoader({
+      ...loader,
+      loader2:false
+    })
     })
     .catch((err)=>{
      console.log(err.message)
+      setLoader({
+      ...loader,
+      loader2:false
+    })
     })
   }
 
@@ -122,19 +151,25 @@ console.log(state.image)
   // };
 
   const handleEdit = (id,ind) => {
+  
     setEditId(ind)
     const edit = arr.find((ele, ind) => {
       console.log(ind,"ind")
       return ind === id;
+      
     });
     setState(edit);
     setSubmit(false)
   };
 
   return (
-    <>
+    <div className="container pt-5">
       <h3>Todo App</h3>
-      <input
+      {/* <Form/> */}
+     <div className="container pt-5">
+      <div className="row">
+        <div className="col-md form-input">
+        <input
         type="text"
         value={state.name}
         name="name"
@@ -156,12 +191,20 @@ console.log(state.image)
         placeholder="age"
       />
       <input type="file"  name="image" onChange={handleChange}/>
-      {submit?<button onClick={handleClick}>Save</button>:   
-      <button onClick={handleUpdate}>Edit</button>}
+      {submit?<button className="btn-primary" onClick={handleClick}>Submit <span>{setLoader.loader1?<div class="spinner-border-sm spinner-border text-light" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>:""}</span></button>:   
+      <button className="btn-primary" onClick={handleUpdate}>Edit <span>{setLoader.loader2?<div class="spinner-border-sm spinner-border text-light" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>:""}</span></button>}
+        </div>
+      </div>
+     </div>
 
 
    
-      <table className="table table-striped">
+      <div className="container pt-5">
+      <table className="table table-dark table-hover border ">
         <thead>
           <tr>
             <th scope="col">Name</th>
@@ -174,19 +217,25 @@ console.log(state.image)
           {arr.map((elem, id) => {
             return (
               <tr key={id}>
-                <td>{elem.name}</td>
-                <td>{elem.age}</td>
-                <td>{elem.email}</td>
-                <td>
-                  <button onClick={() => handleEdit(id,elem._id)}>Edit</button>
-                  <button onClick={() => handleDelete(elem._id)}>Delete</button>
+                <td scope="row">{elem.name}</td>
+                <td scope="row">{elem.age}</td>
+                <td scope="row">{elem.email}</td>
+                <td scope="row">
+                  <button className="action-btn" onClick={() => handleEdit(id,elem._id)}>Edit <span>{setLoader.loader3?<div class="spinner-border-sm spinner-border text-light" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>:""}</span></button>
+                  <button className="action-btn" onClick={() => handleDelete(elem._id)}>Delete <span>{setLoader.loader4?<div class="spinner-border-sm spinner-border text-light" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>:""}</span></button>
                 </td>
               </tr>
             );
           })}
         </tbody>
       </table>
-    </>
+      </div>
+      
+    </div>
   );
 };
 
